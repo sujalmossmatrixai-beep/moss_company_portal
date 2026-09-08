@@ -1,0 +1,10 @@
+{
+  "description": "Showcases company information and product details for users, providing a professional landing page that highlights offerings and upcoming releases.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
