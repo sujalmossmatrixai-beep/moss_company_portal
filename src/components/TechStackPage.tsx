@@ -328,7 +328,7 @@ export default function TechStackPage({ onBack, onOpenDemo }: TechStackPageProps
           </h2>
 
           <p className="font-['Inter'] text-sm sm:text-base text-slate-600 max-w-3xl mx-auto leading-relaxed">
-            Explore the complete technical catalog powering Moss AI Mapper, Moss Tech Academy, and our Fortune 500 customer deployments globally.
+            Explore the complete technical catalog powering Moss Migration, Moss Med AI, Moss Tech Custom Solutions, and Moss Academy worldwide.
           </p>
 
           {/* Quick Metrics */}

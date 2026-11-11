@@ -106,7 +106,7 @@ export default function TechTicker() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 rounded-2xl bg-[#f8f9fa] border border-slate-200">
           {[
-            { metric: '10,000+', label: 'Engineers Empowered', sub: 'Trained & Upskilled Globally' },
+            { metric: '100M+', label: 'Records Migrated', sub: 'Sub-second real-time CDC' },
             { metric: '99.99%', label: 'Platform Availability', sub: 'Zero-Downtime Architecture' },
             { metric: '50+', label: 'Ecosystem Integrations', sub: 'Native Cloud & Data Connectors' },
             { metric: 'Global', label: 'Enterprise Impact', sub: 'Powering Scalable Workloads' },

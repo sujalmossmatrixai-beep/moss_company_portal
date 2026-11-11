@@ -251,7 +251,7 @@ export default function ArchitectureTrust() {
                       Empowering Global Enterprises & Builders Through Transformative Technology
                     </h4>
                     <p className="font-['Inter'] text-sm text-slate-600 leading-relaxed">
-                      Our mission is to engineer high-velocity, intelligent digital infrastructure and upskill the engineering workforce. We bridge the gap between breakthrough technological innovation and mission-critical enterprise production, enabling businesses to scale seamlessly and engineers to achieve peak mastery.
+                      Our mission is to engineer high-velocity, intelligent digital infrastructure and autonomous AI systems. We bridge the gap between breakthrough technological innovation and mission-critical enterprise production, enabling businesses to scale seamlessly with zero downtime.
                     </p>
                   </div>
 
@@ -351,9 +351,9 @@ export default function ArchitectureTrust() {
                     tag: 'Sovereign AI',
                   },
                   {
-                    title: 'Worldwide Engineering Network',
-                    desc: 'Building a global community of 50,000+ alumni leading mission-critical engineering initiatives across top Fortune 500 enterprises.',
-                    tag: 'Global Impact',
+                    title: 'Worldwide Enterprise Deployments',
+                    desc: 'Delivering mission-critical engineering initiatives and autonomous multi-agent pipelines across Fortune 500 enterprises globally.',
+                    tag: 'Global Scale',
                   },
                   {
                     title: 'Self-Healing Distributed Systems',

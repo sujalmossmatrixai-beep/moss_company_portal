@@ -87,7 +87,7 @@ export default function TechStackShowcase() {
             Powered by <span className="text-[#1b95cd]">Cloud</span>, Autonomous <span className="text-[#1b95cd]">AI</span> & <span className="text-[#1b95cd]">React</span>
           </h2>
           <p className="font-['Inter'] text-xs sm:text-sm text-slate-500 mt-2">
-            Battle-tested technologies powering our data migration engines, academy platforms, and enterprise solutions.
+            Battle-tested technologies powering Moss Migration, Moss Med AI, Moss Tech Custom Solutions, and Moss Academy.
           </p>
         </div>
 
