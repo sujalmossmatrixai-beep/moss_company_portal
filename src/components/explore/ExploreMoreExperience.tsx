@@ -5,6 +5,7 @@ import {
   MOSS_ACADEMY_DATA,
   CUSTOM_AI_SOLUTIONS_DATA,
 } from '../../data/productData'
+import { saveLead, exportMasterExcelWorkbook, exportSingleCategoryExcel, LeadCategory } from '../../utils/leadStorage'
 
 export type ExploreProductType = 'med-ai' | 'mapper' | 'academy' | 'solutions'
 
@@ -13,6 +14,7 @@ interface ExploreMoreExperienceProps {
   initialItemId?: string
   onBackToHome?: () => void
   onContactClick?: () => void
+  onOpenLeadExport?: () => void
 }
 
 export default function ExploreMoreExperience({
@@ -20,6 +22,7 @@ export default function ExploreMoreExperience({
   initialItemId,
   onBackToHome,
   onContactClick,
+  onOpenLeadExport,
 }: ExploreMoreExperienceProps) {
   const [activeProduct, setActiveProduct] = useState<ExploreProductType>(initialProduct)
 
@@ -50,6 +53,19 @@ export default function ExploreMoreExperience({
     email: '',
     phone: '',
     mode: 'Hybrid (Bangalore Campus)',
+  })
+
+  // Product Inquiry & Demo Modal
+  const [demoModalOpen, setDemoModalOpen] = useState(false)
+  const [demoSubmitted, setDemoSubmitted] = useState(false)
+  const [demoCategory, setDemoCategory] = useState<LeadCategory>('Moss Med AI')
+  const [demoItemTitle, setDemoItemTitle] = useState<string>('')
+  const [demoForm, setDemoForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    organization: '',
+    message: '',
   })
 
   // Horizontal scroll refs
@@ -108,10 +124,45 @@ export default function ExploreMoreExperience({
 
   const handleEnrollSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    saveLead({
+      fullName: enrollForm.name,
+      email: enrollForm.email,
+      phone: enrollForm.phone,
+      category: 'Course Enrollments',
+      specificItem: activeAcademyCourse.title,
+      learningMode: enrollForm.mode,
+      offerFee: activeAcademyCourse.offerFee || '₹39,999',
+      message: `Direct Academy course enrollment from explore hub for ${activeAcademyCourse.title} (${enrollForm.mode})`,
+    })
     setEnrollSubmitted(true)
     setTimeout(() => {
       setEnrollSubmitted(false)
       setEnrollModalOpen(false)
+    }, 2600)
+  }
+
+  const openDemoModal = (category: LeadCategory, itemTitle: string) => {
+    setDemoCategory(category)
+    setDemoItemTitle(itemTitle)
+    setDemoSubmitted(false)
+    setDemoModalOpen(true)
+  }
+
+  const handleDemoSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    saveLead({
+      fullName: demoForm.name,
+      email: demoForm.email,
+      phone: demoForm.phone,
+      company: demoForm.organization,
+      category: demoCategory,
+      specificItem: demoItemTitle,
+      message: demoForm.message || `Inquiry / Demo request for ${demoItemTitle} (${demoCategory})`,
+    })
+    setDemoSubmitted(true)
+    setTimeout(() => {
+      setDemoSubmitted(false)
+      setDemoModalOpen(false)
     }, 2600)
   }
 
@@ -409,7 +460,7 @@ export default function ExploreMoreExperience({
                     <span>Visit Live Portal ↗</span>
                   </a>
                   <button
-                    onClick={onContactClick}
+                    onClick={() => openDemoModal('Moss Med AI', activeMedPortal.name || 'Moss Med AI Platform')}
                     className="px-3.5 py-2 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 font-['Poppins'] font-medium text-xs transition-colors cursor-pointer border border-slate-200"
                   >
                     Request Demo
@@ -790,7 +841,7 @@ export default function ExploreMoreExperience({
                       <span>Visit Live Portal ↗</span>
                     </a>
                     <button
-                      onClick={onContactClick}
+                      onClick={() => openDemoModal('Moss AI Mapper', activeMapperModule.name || 'AI Schema Mapping Engine')}
                       className="px-3.5 py-2 rounded-lg bg-white hover:bg-slate-50 text-slate-700 text-xs font-['Poppins'] font-medium border border-slate-200 transition-colors cursor-pointer"
                     >
                       Consult Architect
@@ -1305,7 +1356,7 @@ export default function ExploreMoreExperience({
                   </div>
 
                   <button
-                    onClick={onContactClick}
+                    onClick={() => openDemoModal('Custom AI Solutions', activeSolutionObj.title || 'Enterprise AI Architecture')}
                     className="px-4 py-2 rounded-lg bg-[#1b95cd] hover:bg-[#1579b0] text-white font-['Poppins'] font-medium text-xs transition-colors shrink-0 cursor-pointer"
                   >
                     Schedule Architecture Review
@@ -1478,6 +1529,139 @@ export default function ExploreMoreExperience({
                     </button>
                     <div className="flex items-center justify-between mt-2 text-[10px] text-slate-400">
                       <span>Limited Seats Cohort</span>
+                      <span>Desk: 8867475219</span>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Product Demo / Architecture Review Modal (Med AI, Mapper, Solutions) */}
+      {demoModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
+          <div className="relative bg-white border border-slate-200 rounded-2xl p-6 sm:p-7 max-w-md w-full shadow-xl">
+            <button
+              onClick={() => setDemoModalOpen(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
+              aria-label="Close"
+            >
+              ✕
+            </button>
+
+            {demoSubmitted ? (
+              <div className="text-center py-6">
+                <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-3 text-xl font-bold border border-emerald-200">
+                  ✓
+                </div>
+                <h3 className="font-['Poppins'] text-lg font-bold text-[#0d2335]">
+                  Inquiry Registered Successfully
+                </h3>
+                <p className="font-['Inter'] text-xs text-slate-600 mt-2 leading-relaxed max-w-xs mx-auto">
+                  Thank you! Our enterprise solution lead will contact you at{' '}
+                  <span className="font-mono text-[#0d2335] font-semibold">{demoForm.email}</span> within 2 hours.
+                </p>
+                <div className="mt-4">
+                  <button
+                    onClick={() => setDemoModalOpen(false)}
+                    className="px-5 py-2 rounded-lg bg-[#1b95cd] hover:bg-[#1579b0] text-white text-xs font-['Poppins'] font-semibold transition-colors cursor-pointer"
+                  >
+                    Done
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="px-2 py-0.5 rounded bg-sky-50 text-[#1b95cd] text-[10px] font-['Poppins'] font-bold">
+                    {demoCategory}
+                  </span>
+                  <span className="text-[11px] text-slate-500 font-['Inter']">Official Inquiry</span>
+                </div>
+                <h3 className="font-['Poppins'] text-lg font-bold text-[#0d2335]">
+                  {demoCategory === 'Moss Med AI'
+                    ? `Request ${demoItemTitle} Demo`
+                    : demoCategory === 'Moss AI Mapper'
+                    ? `Schedule ${demoItemTitle} Consultation`
+                    : `Schedule ${demoItemTitle} Review`}
+                </h3>
+                <p className="text-xs text-slate-500 font-['Inter'] mt-0.5">
+                  Connect with our principal architects for tailored workflows & sandbox access.
+                </p>
+
+                <form onSubmit={handleDemoSubmit} className="mt-4 space-y-3 font-['Inter']">
+                  <div>
+                    <label className="block text-xs font-medium text-slate-700 mb-1">Full Name</label>
+                    <input
+                      type="text"
+                      required
+                      value={demoForm.name}
+                      onChange={(e) => setDemoForm({ ...demoForm, name: e.target.value })}
+                      placeholder="e.g. Dr. Rajesh Verma / Anita Patel"
+                      className="w-full px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 text-xs focus:outline-none focus:border-[#1b95cd]"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-medium text-slate-700 mb-1">Work Email</label>
+                      <input
+                        type="email"
+                        required
+                        value={demoForm.email}
+                        onChange={(e) => setDemoForm({ ...demoForm, email: e.target.value })}
+                        placeholder="name@hospital.org"
+                        className="w-full px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 text-xs focus:outline-none focus:border-[#1b95cd]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-700 mb-1">Phone / WhatsApp</label>
+                      <input
+                        type="tel"
+                        required
+                        value={demoForm.phone}
+                        onChange={(e) => setDemoForm({ ...demoForm, phone: e.target.value })}
+                        placeholder="+91-8867475219"
+                        className="w-full px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 text-xs focus:outline-none focus:border-[#1b95cd]"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-slate-700 mb-1">
+                      Hospital / Organization Name
+                    </label>
+                    <input
+                      type="text"
+                      value={demoForm.organization}
+                      onChange={(e) => setDemoForm({ ...demoForm, organization: e.target.value })}
+                      placeholder="e.g. Apex Health Hospital Network"
+                      className="w-full px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 text-xs focus:outline-none focus:border-[#1b95cd]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-slate-700 mb-1">Specific Requirements (Optional)</label>
+                    <textarea
+                      rows={2}
+                      value={demoForm.message}
+                      onChange={(e) => setDemoForm({ ...demoForm, message: e.target.value })}
+                      placeholder={`Tell us about your team size, timeline, or current systems...`}
+                      className="w-full px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 text-xs focus:outline-none focus:border-[#1b95cd]"
+                    />
+                  </div>
+
+                  <div className="pt-1">
+                    <button
+                      type="submit"
+                      className="w-full py-2.5 rounded-lg bg-[#1b95cd] hover:bg-[#1579b0] text-white font-['Poppins'] font-semibold text-xs transition-colors cursor-pointer"
+                    >
+                      Submit & Save to Inquiries Sheet
+                    </button>
+                    <div className="flex items-center justify-between mt-2 text-[10px] text-slate-400">
+                      <span>Strict Privacy · Zero Spam</span>
                       <span>Desk: 8867475219</span>
                     </div>
                   </div>

@@ -1,6 +1,10 @@
 import { useState } from 'react'
 
-export default function Footer() {
+interface FooterProps {
+  onOpenLeadExport?: () => void
+}
+
+export default function Footer({ onOpenLeadExport }: FooterProps) {
   const [newsletterEmail, setNewsletterEmail] = useState('')
   const [subscribed, setSubscribed] = useState(false)
 

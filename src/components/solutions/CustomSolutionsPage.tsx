@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Breadcrumbs from '../navigation/Breadcrumbs'
 import { CUSTOM_AI_SOLUTIONS_DATA } from '../../data/productData'
+import { saveLead } from '../../utils/leadStorage'
 
 interface CustomSolutionsPageProps {
   selectedSolutionId?: string
@@ -43,6 +44,14 @@ export default function CustomSolutionsPage({
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    saveLead({
+      fullName: formData.name,
+      email: formData.email,
+      company: formData.company,
+      category: 'Custom AI Solutions',
+      specificItem: formData.solution || activeSolution.title,
+      message: formData.message || `Inquiry for ${formData.solution || activeSolution.title}`,
+    })
     setFormSubmitted(true)
     setTimeout(() => {
       setFormSubmitted(false)

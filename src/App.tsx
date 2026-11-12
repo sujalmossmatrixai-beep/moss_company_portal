@@ -11,12 +11,14 @@ import InteractiveDemoPage from './components/InteractiveDemoPage'
 import TechStackPage from './components/TechStackPage'
 import ExploreMoreExperience, { ExploreProductType } from './components/explore/ExploreMoreExperience'
 import ErrorBoundary from './components/ErrorBoundary'
+import LeadExportModal from './components/admin/LeadExportModal'
 
 export default function App() {
   const [currentView, setCurrentView] = useState<'home' | 'demo' | 'techstack' | 'explore'>('home')
   const [demoProductIndex, setDemoProductIndex] = useState(0)
   const [exploreProduct, setExploreProduct] = useState<ExploreProductType>('med-ai')
   const [exploreItemId, setExploreItemId] = useState<string | undefined>(undefined)
+  const [leadExportOpen, setLeadExportOpen] = useState(false)
 
   // Listen to hash changes and route smoothly
   useEffect(() => {
@@ -33,6 +35,10 @@ export default function App() {
         setCurrentView('techstack')
         window.scrollTo({ top: 0, behavior: 'smooth' })
         return
+      }
+
+      if (hash.includes('admin-leads')) {
+        setLeadExportOpen(true)
       }
 
       // Check Explore / Product exploration routes
@@ -93,7 +99,20 @@ export default function App() {
 
     handleHash()
     window.addEventListener('hashchange', handleHash)
-    return () => window.removeEventListener('hashchange', handleHash)
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Secret admin shortcut (Ctrl+Shift+L) to open leads export modal without visible UI button
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'L' || e.key === 'l')) {
+        e.preventDefault()
+        setLeadExportOpen((prev) => !prev)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      window.removeEventListener('hashchange', handleHash)
+      window.removeEventListener('keydown', handleKeyDown)
+    }
   }, [])
 
   const handleOpenDemo = (productIndex: number = 0) => {
@@ -148,6 +167,7 @@ export default function App() {
               initialProduct={exploreProduct}
               initialItemId={exploreItemId}
               onBackToHome={handleBackToHome}
+              onOpenLeadExport={() => setLeadExportOpen(true)}
               onContactClick={() => {
                 setCurrentView('home')
                 window.location.hash = 'contact'
@@ -185,13 +205,19 @@ export default function App() {
             <FAQSection />
 
             {/* Enterprise Demo Booking & Consultation Section */}
-            <ContactSection />
+            <ContactSection onOpenLeadExport={() => setLeadExportOpen(true)} />
           </>
         )}
       </main>
 
       {/* Enterprise Global Footer */}
-      <Footer />
+      <Footer onOpenLeadExport={() => setLeadExportOpen(true)} />
+
+      {/* Excel Leads Export & Management Modal */}
+      <LeadExportModal
+        isOpen={leadExportOpen}
+        onClose={() => setLeadExportOpen(false)}
+      />
     </div>
   )
 }

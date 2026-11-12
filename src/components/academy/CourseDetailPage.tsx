@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Breadcrumbs from '../navigation/Breadcrumbs'
 import { MOSS_ACADEMY_DATA } from '../../data/productData'
+import { saveLead } from '../../utils/leadStorage'
 
 interface CourseDetailPageProps {
   courseSlug: string
@@ -29,6 +30,17 @@ export default function CourseDetailPage({ courseSlug, onNavigate }: CourseDetai
 
   const handleEnrollSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    saveLead({
+      fullName: enrollData.fullName,
+      email: enrollData.email,
+      phone: enrollData.phone,
+      category: 'Course Enrollments',
+      specificItem: course.title,
+      learningMode: enrollData.mode,
+      offerFee: course.offerFee,
+      company: enrollData.background,
+      message: `Enrolled in ${course.title} (${enrollData.mode}). Background: ${enrollData.background}`,
+    })
     setEnrollSubmitted(true)
     setTimeout(() => {
       setEnrollSubmitted(false)

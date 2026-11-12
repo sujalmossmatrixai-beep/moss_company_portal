@@ -1,10 +1,16 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
+import { saveLead, ProductCategory, exportMasterExcelWorkbook } from '../utils/leadStorage'
 
-export default function ContactSection() {
+interface ContactSectionProps {
+  onOpenLeadExport?: () => void
+}
+
+export default function ContactSection({ onOpenLeadExport }: ContactSectionProps) {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
+    phone: '',
     company: '',
     role: '',
     interest: 'Moss Tech: Build Your Custom Solution',
@@ -27,10 +33,31 @@ export default function ContactSection() {
     e.preventDefault()
     setIsSubmitting(true)
 
+    // Automatically categorize into the right Excel sheet
+    let category: ProductCategory = 'Custom AI Solutions'
+    if (formData.interest.includes('Med AI') || formData.interest.includes('Hospital')) {
+      category = 'Moss Med AI'
+    } else if (formData.interest.includes('Migration') || formData.interest.includes('Mapper')) {
+      category = 'Moss AI Mapper'
+    } else if (formData.interest.includes('Academy') || formData.interest.includes('Enroll')) {
+      category = 'Moss Academy Inquiries'
+    }
+
+    saveLead({
+      fullName: `${formData.firstName} ${formData.lastName}`.trim(),
+      email: formData.email,
+      phone: formData.phone || '+91-8867475219',
+      organization: formData.company,
+      productCategory: category,
+      specificItem: formData.interest,
+      message: formData.message || `Team scope: ${formData.teamSize} users. Role: ${formData.role || 'Unspecified'}`,
+      source: 'Homepage Demo & Consultation Booking Form',
+    })
+
     setTimeout(() => {
       setIsSubmitting(false)
       setIsSubmitted(true)
-    }, 900)
+    }, 600)
   }
 
   return (
@@ -126,8 +153,9 @@ export default function ContactSection() {
                       <p className="font-semibold text-slate-700 mb-1">Summary of Request:</p>
                       <p>• Solution Interest: {formData.interest}</p>
                       <p>• Organization: {formData.company || 'Enterprise'}</p>
-                      <p>• Estimated Scope: {formData.teamSize} Users</p>
+                      <p>• Phone / WhatsApp: {formData.phone || '+91-8867475219'}</p>
                     </div>
+
                     <button
                       onClick={() => {
                         setIsSubmitted(false)
@@ -135,6 +163,7 @@ export default function ContactSection() {
                           firstName: '',
                           lastName: '',
                           email: '',
+                          phone: '',
                           company: '',
                           role: '',
                           interest: 'Moss Tech: Build Your Custom Solution',
@@ -142,7 +171,7 @@ export default function ContactSection() {
                           message: '',
                         })
                       }}
-                      className="btn-secondary-outline px-6 py-2.5 rounded-xl text-xs font-['Poppins'] font-medium cursor-pointer"
+                      className="text-xs text-slate-500 hover:text-slate-800 underline font-['Poppins'] cursor-pointer"
                     >
                       Submit Another Request
                     </button>

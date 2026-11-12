@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Breadcrumbs from '../navigation/Breadcrumbs'
 import { MOSS_ACADEMY_DATA } from '../../data/productData'
+import { saveLead } from '../../utils/leadStorage'
 
 interface HackathonDetailPageProps {
   hackathonSlug: string
@@ -28,6 +29,15 @@ export default function HackathonDetailPage({
 
   const handleRegisterSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    saveLead({
+      fullName: regForm.leadName,
+      email: regForm.leadEmail,
+      phone: regForm.leadPhone,
+      company: `Team: ${regForm.teamName} (${regForm.teamSize})`,
+      category: 'Moss Academy Inquiries',
+      specificItem: `${hackathon.title} - ${regForm.problemStatement}`,
+      message: `Hackathon Registration: Team ${regForm.teamName}. Problem: ${regForm.problemStatement}`,
+    })
     setRegisterSubmitted(true)
     setTimeout(() => {
       setRegisterSubmitted(false)
